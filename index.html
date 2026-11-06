@@ -154,7 +154,7 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
   function startCam(){
     if(stream) return Promise.resolve(true);
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){fail('เบราว์เซอร์ไม่รองรับกล้องสด');return Promise.resolve(false)}
-    return navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:720},height:{ideal:960}},audio:false})
+    return navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1400},height:{ideal:1080}},audio:false})
       .then(function(s){stream=s;video.srcObject=s;hint.style.display='none';return video.play().catch(function(){}).then(function(){return true})})
       .catch(function(){fail('กล้องสดใช้ไม่ได้ในหน้านี้');return false});
   }
