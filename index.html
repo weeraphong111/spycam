@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Facebook Mockup</title>
+<style>
+:root{--bg:#18191a;--card:#242526;--card2:#3a3b3c;--tx:#e4e6eb;--tx2:#b0b3b8;--blue:#1877f2;--red:#e41e3f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#18191a}}
+:root[data-theme="dark"]{--bg:#18191a}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#000;color:var(--tx);font-family:-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif}
+#app{position:relative;max-width:430px;height:100%;margin:0 auto;background:var(--bg);overflow:hidden;display:flex;flex-direction:column}
+header{display:flex;align-items:center;padding:10px 14px 6px;gap:10px}
+header h1{flex:1;font-size:34px;letter-spacing:-1.5px;font-weight:800;color:#fff}
+.ib{position:relative;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:none;border:0;color:#fff}
+.ib svg,.nav svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.badge{position:absolute;top:-2px;right:-2px;background:var(--red);color:#fff;font-size:12px;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center}
+#scroll{flex:1;overflow-y:auto;padding-bottom:90px}
+.composer{display:flex;align-items:center;gap:12px;padding:10px 14px}
+.av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:linear-gradient(#7ec8e3,#1877f2);flex:none}
+.composer span{flex:1;font-size:17px}
+.stories{display:flex;gap:8px;overflow-x:auto;padding:8px 10px 12px;scrollbar-width:none}
+.stories::-webkit-scrollbar{display:none}
+.st{position:relative;flex:none;width:118px;height:210px;border-radius:14px;overflow:hidden;background:var(--card);border:1px solid #333}
+.st .name{position:absolute;left:10px;bottom:8px;right:8px;font-weight:600;font-size:15px;line-height:1.2;color:#fff;z-index:2}
+.st.me{background:var(--card)}
+.cam{position:absolute;inset:0 0 auto 0;height:140px;background:linear-gradient(#9fd8f0,#2aa9c9);overflow:hidden}
+.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam .hint{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:12px;padding:8px;color:#fff;text-shadow:0 1px 3px #0008}
+.plus{position:absolute;left:50%;top:122px;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:var(--blue);border:3px solid var(--card);display:grid;place-items:center;z-index:3;color:#fff;font-size:24px;line-height:1}
+.st.me .name{text-align:center;left:0;right:0;bottom:12px}
+.sring{position:absolute;top:8px;left:8px;width:34px;height:34px;border-radius:50%;border:3px solid var(--blue);display:grid;place-items:center;font-size:16px;background:#fff3;z-index:2}
+.bgA{background:linear-gradient(#aaa,#4a5a3a)}.bgB{background:#000}.bgC{background:linear-gradient(#5a7a4a,#2a3a2a)}
+.center{position:absolute;inset:0;display:grid;place-items:center;font-size:11px;text-align:center;padding:8px;color:#fff}
+hr{border:0;height:6px;background:#000}
+.post{padding-top:10px}
+.ph{display:flex;align-items:center;gap:10px;padding:0 14px}
+.ph b{display:block;font-size:17px}.ph small{color:var(--tx2);font-size:14px}
+.ph .sp{flex:1}
+.ph .dots{font-size:22px;color:var(--tx2);letter-spacing:2px}
+.ptext{padding:10px 14px;font-size:18px}
+.share{margin:0 14px;border:1px solid #3a3b3c;border-radius:12px;overflow:hidden}
+.share .sh{padding:10px;display:flex;gap:10px;align-items:center}
+.logo{width:42px;height:42px;border-radius:50%;background:#0b0b0b;border:1px solid #444;display:grid;place-items:center;font-size:10px;font-weight:700}
+.share p{padding:0 12px 10px;font-size:17px;line-height:1.5}
+.share p a{color:var(--tx2)}
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:2px;height:230px}
+.p1{background:linear-gradient(160deg,#d8c9a0,#8a7a5a 55%,#3a3a3a)}
+.p2{background:linear-gradient(160deg,#9bb7d4,#7a6a50 60%,#2a2a2a)}
+nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));height:64px;border-radius:32px;background:#242526ee;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-around;border:1px solid #333}
+.nav{width:56px;height:46px;border:0;background:none;color:#e4e6eb;display:grid;place-items:center;border-radius:23px}
+.nav.act{background:var(--card2);width:76px;height:48px}
+.nav.act svg{fill:currentColor}
+#shutter{width:48px;height:48px;border-radius:50%;border:3px solid #fff;padding:0;background:none;overflow:hidden;position:relative}
+#shutter img{width:100%;height:100%;object-fit:cover;display:block}
+#shutter:active{transform:scale(.9)}
+#shutter::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 2px #0006}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:20}
+.flash.on{animation:fl .35s}
+@keyframes fl{0%{opacity:.9}100%{opacity:0}}
+#toast{position:absolute;left:50%;top:70px;transform:translate(-50%,-20px);background:#000c;color:#fff;padding:8px 16px;border-radius:20px;font-size:14px;opacity:0;transition:.3s;z-index:30;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#cnt{position:absolute;top:8px;right:8px;z-index:4;background:#000a;color:#fff;border:0;border-radius:14px;padding:4px 9px;font-size:13px}
+#cnt[hidden]{display:none}
+#sheet{position:absolute;inset:0;background:#000b;z-index:40;display:flex;align-items:flex-end}
+#sheet[hidden]{display:none}
+.sh2{width:100%;max-height:75%;overflow:auto;background:var(--card);border-radius:18px 18px 0 0;padding:14px}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:10px}.top b{flex:1}
+.top button{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px}
+.top #cls{background:var(--card2)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.grid div{position:relative;aspect-ratio:3/4}
+.grid img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block}
+.grid .x{position:absolute;top:3px;right:3px;background:#000a;color:#fff;border:0;border-radius:50%;width:22px;height:22px}
+.tip{color:var(--tx2);font-size:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <button class="ib" aria-label="menu"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <h1>facebook</h1>
+    <button class="ib"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg></button>
+    <button class="ib"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+    <button class="ib"><svg viewBox="0 0 24 24"><path d="M12 3C7 3 3 6.8 3 11.4c0 2.6 1.3 4.9 3.3 6.4V21l3-1.7c.9.2 1.8.4 2.7.4 5 0 9-3.800 9-8.300S17 3 12 3z"/></svg><span class="badge">2</span></button>
+  </header>
+
+  <div id="scroll">
+    <div class="composer"><img class="av" id="av1" alt=""><span>คุณกำลังคิดอะไรอยู่</span><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#b0b3b8" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="1.500"/><path d="M21 16l-5-5-9 9"/></svg></div>
+
+    <div class="stories">
+      <div class="st me" id="camCard">
+        <button id="cnt" hidden>📷 0</button>
+        <div class="cam"><video id="video" playsinline muted autoplay></video><div class="hint" id="hint">แตะเพื่อเปิดกล้อง</div></div>
+        <div class="plus">+</div>
+        <div class="name">สร้างสตอรี่</div>
+      </div>
+      <div class="st bgA"><div class="sring">🐶</div><div class="center">2026-11-06 11:48</div><div class="name">Wichittra Ao Saetiao</div></div>
+      <div class="st bgB"><div class="sring">🙂</div><div class="center">ทำบุญกันแจ้งเจ้าภาพด้วยนะครับ สาธุ 🙏</div><div class="name">Karishma NiJk</div></div>
+      <div class="st bgC"><div class="sring">😎</div><div class="name">ช่าง พัทยา</div></div>
+    </div>
+    <hr>
+    <div class="post">
+      <div class="ph"><img class="av" style="background:linear-gradient(#e8b97a,#333)" alt=""><div class="sp"><b>Sky Sitthichok</b><small>1 ชม. · 🌐</small></div><span class="dots">•••</span><span style="font-size:26px;color:var(--tx2)">✕</span></div>
+      <div class="ptext">โง่จัด</div>
+      <div class="share">
+        <div class="sh"><div class="logo">MGR</div><div><b>MGR Online ภาคกลาง-ตะวันออก</b> · <span style="color:#6ea8ff">ติดตาม</span><br><small style="color:var(--tx2)">1 วัน · 🌐</small></div></div>
+        <p>ตำรวจเผยเหตุขู่กราดยิงโรงเรียนเมืองพัทยา 3 นักเรียน ม.1 ยอมรับเป็นผู้ส่งข้อความข่มขู่ในกลุ่มไลน์เอง ไม่มีบุคคลปริศนาเกี่ยวข้อง… <a>ดูเพิ่มเติม</a></p>
+        <div class="photos"><div class="p1"></div><div class="p2"></div></div>
+      </div>
+      <div style="height:200px"></div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="nav act" aria-label="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg></button>
+    <button class="nav"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="M10 9l5 3-5 3z"/></svg></button>
+    <button class="nav"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.500"/><path d="M3 20c0-3.500 2.700-6 6-6s6 2.500 6 6"/><circle cx="17" cy="9" r="2.500"/><path d="M17 14c2.500 0 4 2 4 5"/></svg></button>
+    <button class="nav"><svg viewBox="0 0 24 24"><path d="M4 9l1-5h14l1 5M4 9v11h16V9M4 9c0 2 3 2 4 0 1 2 3 2 4 0 1 2 3 2 4 0 1 2 4 2 4 0"/></svg></button>
+    <button class="nav"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 1112 0v6l2 2H4zM10 21h4"/></svg></button>
+    <button id="shutter" aria-label="shutter"><img id="av2" alt=""></button>
+  </nav>
+
+  <div id="sheet" hidden><div class="sh2"><div class="top"><b id="sct">ภาพที่ถ่าย</b><button id="dlAll">ดาวน์โหลดทั้งหมด</button><button id="cls">✕</button></div><div class="grid" id="grid"></div><p class="tip">แตะรูปเพื่อดาวน์โหลดทีละภาพ · ถ้าดาวน์โหลดไม่ได้ ให้กดค้างที่รูปแล้วเลือกบันทึกรูปภาพ</p></div></div>
+  <div class="flash" id="flash"></div>
+  <div id="toast"></div>
+</div>
+<canvas id="cv" hidden></canvas>
+<input type="file" id="fileIn" accept="image/*" capture="user" hidden>
+
+<script>
+(function(){
+  var video=document.getElementById('video'),hint=document.getElementById('hint'),
+      flash=document.getElementById('flash'),toast=document.getElementById('toast'),
+      cv=document.getElementById('cv'),av1=document.getElementById('av1'),av2=document.getElementById('av2');
+  var stream=null,camFailed=false,fileIn=document.getElementById('fileIn');
+  function fail(m){camFailed=true;hint.style.display='';hint.textContent=m+' · แตะเพื่อถ่ายด้วยกล้องเครื่อง'}
+
+  // default avatar: simple SVG data URI
+  var def='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ec8e3"/><stop offset="1" stop-color="#1877f2"/></linearGradient></defs><rect width="48" height="48" fill="url(#g)"/><circle cx="24" cy="19" r="8" fill="#fff"/><path d="M8 48c2-12 10-16 16-16s14 4 16 16z" fill="#ff8a3d"/></svg>');
+  av1.src=def; av2.src=def;
+
+  function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(say.t);say.t=setTimeout(function(){toast.classList.remove('on')},1800)}
+
+  function startCam(){
+    if(stream) return Promise.resolve(true);
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){fail('เบราว์เซอร์ไม่รองรับกล้องสด');return Promise.resolve(false)}
+    return navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:960}},audio:false})
+      .then(function(s){stream=s;video.srcObject=s;hint.style.display='none';return video.play().catch(function(){}).then(function(){return true})})
+      .catch(function(){fail('กล้องสดใช้ไม่ได้ในหน้านี้');return false});
+  }
+
+  document.getElementById('camCard').addEventListener('click',function(){if(camFailed)fileIn.click();else startCam()});
+  startCam();
+
+  document.getElementById('shutter').addEventListener('click',function(){
+    if(camFailed){fileIn.click();return}
+    if(!stream||!video.videoWidth){
+      startCam().then(function(ok){if(ok)say('เปิดกล้องแล้ว กดอีกครั้งเพื่อถ่าย');else say('ใช้กล้องเครื่องแทน กดอีกครั้งเพื่อถ่าย')});
+      return;
+    }
+    var w=video.videoWidth,h=video.videoHeight;
+    cv.width=w;cv.height=h;
+    var c=cv.getContext('2d');
+    c.translate(w,0);c.scale(-1,1);          // mirror like the preview
+    c.drawImage(video,0,0,w,h);
+    var url=cv.toDataURL('image/jpeg',.9);addShot(url);
+    flash.classList.remove('on');void flash.offsetWidth;flash.classList.add('on');
+    av1.src=url;av2.src=url;                 // update profile pictures with the shot
+    say('ถ่ายภาพแล้ว 📸');
+  });
+var shots=[],cnt=document.getElementById('cnt'),sheet=document.getElementById('sheet'),grid=document.getElementById('grid');
+  function addShot(u){shots.push(u);render()}
+  function render(){
+    cnt.hidden=!shots.length;cnt.textContent='📷 '+shots.length;grid.innerHTML='';
+    shots.forEach(function(u,i){
+      var d=document.createElement('div'),a=document.createElement('a'),im=new Image(),x=document.createElement('button');
+      a.href=u;a.download='photo-'+(i+1)+'.jpg';im.src=u;a.appendChild(im);
+      x.className='x';x.textContent='✕';x.onclick=function(){shots.splice(i,1);render()};
+      d.appendChild(a);d.appendChild(x);grid.appendChild(d);
+    });
+    document.getElementById('sct').textContent='ภาพที่ถ่าย ('+shots.length+')';
+    if(!shots.length)sheet.hidden=true;
+  }
+  cnt.addEventListener('click',function(e){e.stopPropagation();sheet.hidden=false});
+  document.getElementById('cls').addEventListener('click',function(){sheet.hidden=true});
+  document.getElementById('dlAll').addEventListener('click',function(){
+    shots.forEach(function(u,i){setTimeout(function(){
+      var a=document.createElement('a');a.href=u;a.download='photo-'+(i+1)+'.jpg';
+      document.body.appendChild(a);a.click();a.remove();
+    },i*400)});
+  });
+  fileIn.addEventListener('change',function(){
+    var f=fileIn.files&&fileIn.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){
+      var url=r.result,cam=document.querySelector('.cam'),im=cam.querySelector('img');
+      if(!im){im=document.createElement('img');im.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';cam.appendChild(im)}
+      im.src=url;hint.style.display='none';addShot(url);
+      av1.src=url;av2.src=url;
+      flash.classList.remove('on');void flash.offsetWidth;flash.classList.add('on');
+      say('ถ่ายภาพแล้ว 📸');fileIn.value='';
+    };
+    r.readAsDataURL(f);
+  });
+})();
+</script>
+</body>
+</html>
