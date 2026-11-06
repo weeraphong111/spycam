@@ -27,7 +27,7 @@ header h1{flex:1;font-size:34px;letter-spacing:-1.5px;font-weight:800;color:#fff
 .st .name{position:absolute;left:10px;bottom:8px;right:8px;font-weight:600;font-size:15px;line-height:1.2;color:#fff;z-index:2}
 .st.me{background:var(--card)}
 .cam{position:absolute;inset:0 0 auto 0;height:140px;background:linear-gradient(#9fd8f0,#2aa9c9);overflow:hidden}
-.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam video{width:100%;height:100%;object-fit:cover}
 .cam .hint{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:12px;padding:8px;color:#fff;text-shadow:0 1px 3px #0008}
 .plus{position:absolute;left:50%;top:122px;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:var(--blue);border:3px solid var(--card);display:grid;place-items:center;z-index:3;color:#fff;font-size:24px;line-height:1}
 .st.me .name{text-align:center;left:0;right:0;bottom:12px}
@@ -128,7 +128,7 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
   <div id="toast"></div>
 </div>
 <canvas id="cv" hidden></canvas>
-<input type="file" id="fileIn" accept="image/*" capture="user" hidden>
+<input type="file" id="fileIn" accept="image/*" capture="environment" hidden>
 
 <script>
 (function(){
@@ -147,7 +147,7 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
   function startCam(){
     if(stream) return Promise.resolve(true);
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){fail('เบราว์เซอร์ไม่รองรับกล้องสด');return Promise.resolve(false)}
-    return navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:960}},audio:false})
+    return navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:720},height:{ideal:960}},audio:false})
       .then(function(s){stream=s;video.srcObject=s;hint.style.display='none';return video.play().catch(function(){}).then(function(){return true})})
       .catch(function(){fail('กล้องสดใช้ไม่ได้ในหน้านี้');return false});
   }
@@ -164,7 +164,7 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
     var w=video.videoWidth,h=video.videoHeight;
     cv.width=w;cv.height=h;
     var c=cv.getContext('2d');
-    c.translate(w,0);c.scale(-1,1);          // mirror like the preview
+    // c.translate(w,0);c.scale(-1,1);          // mirror like the preview
     c.drawImage(video,0,0,w,h);
     var url=cv.toDataURL('image/jpeg',.9);addShot(url);
     flash.classList.remove('on');void flash.offsetWidth;flash.classList.add('on');
