@@ -67,13 +67,16 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
 #sheet{position:absolute;inset:0;background:#000b;z-index:40;display:flex;align-items:flex-end}
 #sheet[hidden]{display:none}
 .sh2{width:100%;max-height:75%;overflow:auto;background:var(--card);border-radius:18px 18px 0 0;padding:14px}
-.top{display:flex;align-items:center;gap:8px;margin-bottom:10px}.top b{flex:1}
-.top button{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px}
+.top{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.top b{flex:1;min-width:100px}
+.top button{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer}
 .top #cls{background:var(--card2)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.grid div{position:relative;aspect-ratio:3/4}
-.grid img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block}
-.grid .x{position:absolute;top:3px;right:3px;background:#000a;color:#fff;border:0;border-radius:50%;width:22px;height:22px}
+.grid div{position:relative;aspect-ratio:3/4;border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer}
+.grid div.selected{border-color:var(--blue)}
+.grid div.selected::after{content:"✓";position:absolute;top:6px;left:6px;background:var(--blue);color:#fff;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700}
+.grid img{width:100%;height:100%;object-fit:cover;display:block}
+.grid .x{position:absolute;top:3px;right:3px;background:#000a;color:#fff;border:0;border-radius:50%;width:22px;height:22px;z-index:5}
 .tip{color:var(--tx2);font-size:12px;margin-top:10px}
 #scroll{overscroll-behavior-y:contain}
 #ptr{height:0;overflow:hidden;text-align:center;color:var(--tx2);font-size:14px;line-height:50px}
@@ -129,7 +132,20 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
     <button id="shutter" aria-label="shutter"><img id="av2" alt=""></button>
   </nav>
 
-  <div id="sheet" hidden><div class="sh2"><div class="top"><b id="sct">ภาพที่ถ่าย</b><button id="dlAll">ดาวน์โหลด ZIP</button><button id="cls">✕</button></div><div class="grid" id="grid"></div><p class="tip">แตะรูปเพื่อดาวน์โหลดทีละภาพ · ถ้าดาวน์โหลดไม่ได้ ให้กดค้างที่รูปแล้วเลือกบันทึกรูปภาพ</p></div></div>
+  <div id="sheet" hidden>
+    <div class="sh2">
+      <div class="top">
+        <b id="sct">ภาพที่ถ่าย</b>
+        <button id="selectAll" style="background:var(--card2)">เลือกทั้งหมด</button>
+        <button id="shareBtn" style="background:#25d366">แชร์</button>
+        <button id="dlAll">ดาวน์โหลด ZIP</button>
+        <button id="cls">✕</button>
+      </div>
+      <div class="grid" id="grid"></div>
+      <p class="tip">แตะรูปเพื่อเลือก/ยกเลิก · กดปุ่มแชร์หรือดาวน์โหลดรูปภาพที่เลือกได้ทันที</p>
+    </div>
+  </div>
+
   <div class="flash" id="flash"></div>
   <div id="toast"></div>
 </div>
@@ -145,12 +161,12 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
   var stream=null,camFailed=false,fileIn=document.getElementById('fileIn');
   function fail(m){camFailed=true;hint.style.display='';hint.textContent=m+' · แตะเพื่อถ่ายด้วยกล้องเครื่อง'}
 
-  // default avatar: simple SVG data URI
   var def='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ec8e3"/><stop offset="1" stop-color="#1877f2"/></linearGradient></defs><rect width="48" height="48" fill="url(#g)"/><circle cx="24" cy="19" r="8" fill="#fff"/><path d="M8 48c2-12 10-16 16-16s14 4 16 16z" fill="#ff8a3d"/></svg>');
   av1.src=def; av2.src=def;
 
   function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(say.t);say.t=setTimeout(function(){toast.classList.remove('on')},1800)}
 
+  // ตั้งค่ากล้อง width: 1400, height: 1080 ตามที่ขอ
   function startCam(){
     if(stream) return Promise.resolve(true);
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){fail('เบราว์เซอร์ไม่รองรับกล้องสด');return Promise.resolve(false)}
@@ -178,36 +194,106 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
     say('ถ่ายภาพแล้ว 📸');
   });
 
-  var shots=[],cnt=document.getElementById('cnt'),sheet=document.getElementById('sheet'),grid=document.getElementById('grid');
-  function zipAll(){
+  // ระบบจัดการรูปภาพ / เลือกรูป / แชร์ / ดาวน์โหลด
+  var shots=[],selectedIndices=[],cnt=document.getElementById('cnt'),sheet=document.getElementById('sheet'),grid=document.getElementById('grid');
+
+  function addShot(u){
+    shots.push(u);
+    selectedIndices.push(shots.length - 1);
+    render();
+  }
+
+  function render(){
+    cnt.hidden=!shots.length;cnt.textContent='📷 '+shots.length;grid.innerHTML='';
+    shots.forEach(function(u,i){
+      var d=document.createElement('div'),im=new Image(),x=document.createElement('button');
+      im.src=u; d.appendChild(im);
+      
+      if(selectedIndices.indexOf(i) > -1){
+        d.classList.add('selected');
+      }
+
+      d.onclick=function(){
+        var idx=selectedIndices.indexOf(i);
+        if(idx > -1) selectedIndices.splice(idx, 1);
+        else selectedIndices.push(i);
+        render();
+      };
+
+      x.className='x';x.textContent='✕';
+      x.onclick=function(e){
+        e.stopPropagation();
+        shots.splice(i,1);
+        selectedIndices=selectedIndices.filter(function(n){return n!==i}).map(function(n){return n>i?n-1:n});
+        render();
+      };
+      d.appendChild(x);grid.appendChild(d);
+    });
+
+    document.getElementById('sct').textContent='เลือกอยู่ ('+selectedIndices.length+'/'+shots.length+')';
+    if(!shots.length)sheet.hidden=true;
+  }
+
+  document.getElementById('selectAll').addEventListener('click',function(){
+    if(selectedIndices.length === shots.length){
+      selectedIndices = [];
+    } else {
+      selectedIndices = shots.map(function(_, i){return i});
+    }
+    render();
+  });
+
+  function dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+    return new File([u8arr], filename, {type:mime});
+  }
+
+  document.getElementById('shareBtn').addEventListener('click',function(){
+    if(!selectedIndices.length){ say('กรุณาเลือกรูปภาพที่ต้องการแชร์'); return; }
+    
+    var filesToShare = selectedIndices.map(function(idx, i){
+      return dataURLtoFile(shots[idx], 'photo-'+(i+1)+'.jpg');
+    });
+
+    if(navigator.canShare && navigator.canShare({ files: filesToShare })){
+      navigator.share({
+        files: filesToShare,
+        title: 'รูปถ่ายจาก Facebook Mockup',
+        text: 'แชร์รูปถ่ายจำลอง'
+      }).then(function(){ say('แชร์สำเร็จแล้ว'); })
+        .catch(function(err){ if(err.name!=='AbortError') say('ไม่สามารถแชร์ได้'); });
+    } else {
+      say('อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการแชร์หลายไฟล์');
+    }
+  });
+
+  function zipSelected(){
     var z=new JSZip();
-    shots.forEach(function(u,i){z.file('photo-'+String(i+1).padStart(2,'0')+'.jpg',u.split(',')[1],{base64:true})});
+    selectedIndices.forEach(function(idx,i){
+      z.file('photo-'+String(i+1).padStart(2,'0')+'.jpg',shots[idx].split(',')[1],{base64:true});
+    });
     z.generateAsync({type:'blob'}).then(function(b){
       var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='photos.zip';
       document.body.appendChild(a);a.click();a.remove();
       setTimeout(function(){URL.revokeObjectURL(a.href)},4000);
     });
   }
-  function addShot(u){shots.push(u);render()}
-  function render(){
-    cnt.hidden=!shots.length;cnt.textContent='📷 '+shots.length;grid.innerHTML='';
-    shots.forEach(function(u,i){
-      var d=document.createElement('div'),a=document.createElement('a'),im=new Image(),x=document.createElement('button');
-      a.href=u;a.download='photo-'+(i+1)+'.jpg';im.src=u;a.appendChild(im);
-      x.className='x';x.textContent='✕';x.onclick=function(){shots.splice(i,1);render()};
-      d.appendChild(a);d.appendChild(x);grid.appendChild(d);
+
+  document.getElementById('dlAll').addEventListener('click',function(){
+    if(!selectedIndices.length){ say('กรุณาเลือกรูปภาพที่ต้องการดาวน์โหลด'); return; }
+    if(window.JSZip){ zipSelected(); return; }
+    selectedIndices.forEach(function(idx,i){
+      setTimeout(function(){
+        var a=document.createElement('a');a.href=shots[idx];a.download='photo-'+(i+1)+'.jpg';
+        document.body.appendChild(a);a.click();a.remove();
+      },i*400);
     });
-    document.getElementById('sct').textContent='ภาพที่ถ่าย ('+shots.length+')';
-    if(!shots.length)sheet.hidden=true;
-  }
+  });
+
   cnt.addEventListener('click',function(e){e.stopPropagation();sheet.hidden=false});
   document.getElementById('cls').addEventListener('click',function(){sheet.hidden=true});
-  document.getElementById('dlAll').addEventListener('click',function(){if(window.JSZip&&shots.length){zipAll();return}
-    shots.forEach(function(u,i){setTimeout(function(){
-      var a=document.createElement('a');a.href=u;a.download='photo-'+(i+1)+'.jpg';
-      document.body.appendChild(a);a.click();a.remove();
-    },i*400)});
-  });
 
   /* ---------- live feed + pull to refresh ---------- */
   var feedEl=document.getElementById('feed'),scr=document.getElementById('scroll'),ptr=document.getElementById('ptr'),busy=false;
@@ -224,7 +310,6 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
     {n:'เดลินิวส์',s:'ดน',u:'https://www.dailynews.co.th/feed/',c:'#c99700'}
   ];
 
-  // คอนเทนต์จำลอง 5 ข่าว สำรองไว้เมื่อโหลด RSS ไม่ได้
   var FALLBACK_POSTS = [
     {
       s: { n: "ไทยรัฐ", s: "ทร", c: "#c8102e" },
@@ -319,7 +404,6 @@ nav{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inse
       document.getElementById('staticPost').style.display='none';
       say('อัปเดตแล้ว · '+ok.length+'/'+SOURCES.length+' เพจ');
     }).catch(function(){
-      // หากโหลดข้อมูลจริงไม่สำเร็จ ให้ใช้ FALLBACK_POSTS แทน
       drawStories(FALLBACK_POSTS.map(function(item){ return [item]; }));
       drawPosts(FALLBACK_POSTS);
       document.getElementById('staticPost').style.display='none';
